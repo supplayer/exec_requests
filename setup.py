@@ -3,12 +3,12 @@ import re
 
 
 ################################################################
-description = ""
-install_requires = []
-packages_include = ('',)
+description = "Setup Requests."
+install_requires = ['requests', 'lxml']
+packages_include = ('execrequests',)
 author = "Supplayer"
 author_email = "x254724521@hotmail.com"
-python_requires=">=3.6"
+python_requires = ">=3.6"
 ################################################################
 
 with open("README.md", "r") as fh:
