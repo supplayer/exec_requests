@@ -37,9 +37,9 @@ def test_random_cookies(func, cookie=None, set_new=True):
     print(RequestsConf.random_cookies(cookies=cookie, set_new=set_new))
 
 
-def test_random_proxy(func, proxy=None):
+def test_random_proxy(func, proxy=None, proxy_type: tuple = None):
     test_proxies(func)
-    print(RequestsConf.random_proxy(proxy=proxy))
+    print(RequestsConf.random_proxy(proxy=proxy, proxy_type=proxy_type))
 
 
 if __name__ == '__main__':
