@@ -2,16 +2,16 @@ import random
 
 
 class PROXY:
-    proxy_type = ('http',)
+    proxy_type = {'http': 'http', 'https': 'http'}
 
     @classmethod
-    def build(cls, proxy, proxy_type: tuple = None):
+    def build(cls, proxy, proxy_type: dict = None):
         """
         build http and https proxy dict.
         :param proxy_type: set proxy type
         :param proxy: str -> proxy user:password@ip:port  e.g: user:password@0.0.0.0:11111
         """
-        return {f'{i}': f'{i}://{proxy}' for i in proxy_type or cls.proxy_type}
+        return {f'{p_type}': f'{prefix}://{proxy}' for p_type, prefix in (proxy_type or cls.proxy_type).items()}
 
     
 class Clist(list):
@@ -47,7 +47,7 @@ class RequestsConf:
         return cookies if set_new else {**cls.cookies.random({}), **cookies}
 
     @classmethod
-    def random_proxy(cls, proxy: str = None, proxy_generator=None, proxy_type: tuple = ('http', 'https')):
+    def random_proxy(cls, proxy: str = None, proxy_generator=None, proxy_type: dict = None):
         g_proxy = proxy_generator() if proxy_generator else None
         proxy = proxy or (g_proxy or cls.proxies.random())
         return PROXY.build(proxy, proxy_type) if proxy else {}
