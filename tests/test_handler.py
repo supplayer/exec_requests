@@ -16,17 +16,19 @@ class WebberHandler(RequestsHandler):
 
 
 puser_ = {
-    # 'proxy': 'user:password@1.1.1.1:1111',
-    'cookies': {'cookies': 'cookies1'},
-    'headers': {'headers': "headers1"}
+    'proxy': 'puser_user:password@1.1.1.1:1111',
+    'cookies': {'cookies': 'puser_cookies1'},
+    'headers': {'headers': "puser_headers1"}
 }
 
 
 if __name__ == '__main__':
-    # webber = WebberHandler(puser=puser_, set_proxy=False)
-    webber = RequestsHandler(puser=puser_, set_proxy=False)
+    webber = WebberHandler(set_proxy=False)
+    # webber = RequestsHandler()
+    # webber.puser_update(puser_)
+    webber.puser_reset(puser_)
     print(webber.headers)
-    print(webber.cookies)
+    print(webber.cookies.get_dict())
     print(webber.proxies)
-    res = webber.get('https://httpbin.org/get', timeout=0.1)
-    print(res.status_code, res.json())
+    # res = webber.get('https://httpbin.org/get')
+    # print(res.status_code, res.json())

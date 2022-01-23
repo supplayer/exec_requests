@@ -6,13 +6,15 @@ import re
 
 
 class RequestsHandler(Session):
-    def __init__(self, puser=None, set_proxy=True, proxy_generator=None, retry=3, pool_maxsize=10000, **kwargs):
+    def __init__(self, puser=None, set_proxy=True, proxy_generator=None, retry=3,
+                 pool_maxsize=10000, proxy_type: tuple = None, **kwargs):
         super(RequestsHandler, self).__init__()
         retry_strategy = Retry(total=retry, **kwargs)
         adapter = adapters.HTTPAdapter(max_retries=retry_strategy, pool_maxsize=pool_maxsize)
         self.__p = puser or {}
         if set_proxy:
-            self.proxies.update(RequestsConf.random_proxy(self.__p.get('proxy'), proxy_generator=proxy_generator))
+            self.proxies.update(RequestsConf.random_proxy(
+                self.__p.get('proxy'), proxy_generator=proxy_generator, proxy_type=proxy_type))
         if puser:
             self.headers.update(RequestsConf.random_headers(self.__p.get('headers')))
             self.cookies.update(RequestsConf.random_cookies(self.__p.get('cookies')))
@@ -20,6 +22,15 @@ class RequestsHandler(Session):
             self.headers.update(RequestsConf.random_headers(self.__p.get('headers')))
         self.mount("https://", adapter)
         self.mount("http://", adapter)
+
+    def puser_update(self, puser: dict, proxy_type: tuple = None):
+        self.proxies.update(RequestsConf.random_proxy(puser.get('proxy'), proxy_type=proxy_type))
+        self.headers.update(RequestsConf.random_headers(puser.get('headers')))
+        self.cookies.update(RequestsConf.random_cookies(puser.get('cookies')))
+
+    def puser_reset(self, puser: dict):
+        [i.clear() for i in (self.proxies, self.headers, self.cookies)]
+        self.puser_update(puser)
 
     @staticmethod
     def xpath(content: bytes, xpath: str):
