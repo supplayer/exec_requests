@@ -11,9 +11,11 @@ class RequestsHandler(Session):
         super(RequestsHandler, self).__init__()
         retry_strategy = Retry(total=retry, **kwargs)
         adapter = adapters.HTTPAdapter(max_retries=retry_strategy, pool_maxsize=pool_maxsize)
+        self.__proxy_generator = proxy_generator
+        self.__proxy_type = proxy_type
         self.__p = puser or {}
         if set_proxy:
-            proxy_args = dict(proxy_generator=proxy_generator, proxy_type=proxy_type)
+            proxy_args = dict(proxy_generator=self.__proxy_generator, proxy_type=self.__proxy_type)
             self.proxies.update(RequestsConf.random_proxy(self.__p.get('proxy'), **proxy_args))
         if puser:
             self.headers.update(RequestsConf.random_headers(self.__p.get('headers')))
@@ -27,10 +29,20 @@ class RequestsHandler(Session):
         self.proxies.update(RequestsConf.random_proxy(puser.get('proxy'), proxy_type=proxy_type))
         self.headers.update(RequestsConf.random_headers(puser.get('headers')))
         self.cookies.update(RequestsConf.random_cookies(puser.get('cookies')))
+        return self
 
     def puser_reset(self, puser: dict, proxy_type: dict = None):
         [i.clear() for i in (self.proxies, self.headers, self.cookies)]
-        self.puser_update(puser, proxy_type=proxy_type)
+        return self.puser_update(puser, proxy_type=proxy_type)
+
+    def random_proxy(self):
+        proxy_args = dict(proxy_generator=self.__proxy_generator, proxy_type=self.__proxy_type)
+        if self.__proxy_generator:
+            self.proxies.clear()
+            self.proxies.update(RequestsConf.random_proxy(self.__p.get('proxy'), **proxy_args))
+            return self
+        else:
+            raise ValueError(f'The proxy_generator is not set.')
 
     @staticmethod
     def xpath(content: bytes, xpath: str):
