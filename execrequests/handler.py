@@ -28,9 +28,9 @@ class RequestsHandler(Session):
         self.headers.update(RequestsConf.random_headers(puser.get('headers')))
         self.cookies.update(RequestsConf.random_cookies(puser.get('cookies')))
 
-    def puser_reset(self, puser: dict):
+    def puser_reset(self, puser: dict, proxy_type: tuple = None):
         [i.clear() for i in (self.proxies, self.headers, self.cookies)]
-        self.puser_update(puser)
+        self.puser_update(puser, proxy_type=proxy_type)
 
     @staticmethod
     def xpath(content: bytes, xpath: str):
