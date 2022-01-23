@@ -10,9 +10,9 @@ def proxy_generator_():
 RequestsConf.proxies.extend(['user:password@1.1.1.0:11111', 'user:password@1.1.1.1:11111'])
 
 
-class WebberHandler(RequestsHandler):
-    def __init__(self, puser=None, set_proxy=True, proxy_generator=[None, proxy_generator_][0]):
-        super(WebberHandler, self).__init__(puser, set_proxy, proxy_generator)
+class WebHandler(RequestsHandler):
+    def __init__(self, puser=None, set_proxy=True, proxy_generator=[None, proxy_generator_][1]):
+        super(WebHandler, self).__init__(puser, set_proxy, proxy_generator)
 
 
 puser_ = {
@@ -23,12 +23,14 @@ puser_ = {
 
 
 if __name__ == '__main__':
-    webber = WebberHandler(set_proxy=False)
-    # webber = RequestsHandler()
-    # webber.puser_update(puser_)
-    webber.puser_reset(puser_)
-    print(webber.headers)
-    print(webber.cookies.get_dict())
-    print(webber.proxies)
-    # res = webber.get('https://httpbin.org/get')
-    # print(res.status_code, res.json())
+    webber = WebHandler()
+    for _ in range(10):
+        # webber = RequestsHandler()
+        # webber.puser_update(puser_)
+        # webber.puser_reset(puser_)
+        webber.random_proxy()
+        print(webber.headers)
+        print(webber.cookies.get_dict())
+        print(webber.proxies)
+        # res = webber.get('https://httpbin.org/get')
+        # print(res.status_code, res.json())
