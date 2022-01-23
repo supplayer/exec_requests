@@ -35,8 +35,9 @@ class RequestsHandler(Session):
         [i.clear() for i in (self.proxies, self.headers, self.cookies)]
         return self.puser_update(puser, proxy_type=proxy_type)
 
-    def random_proxy(self):
-        proxy_args = dict(proxy_generator=self.__proxy_generator, proxy_type=self.__proxy_type)
+    def random_proxy(self, proxy_generator=None, proxy_type: dict = None):
+        proxy_args = dict(proxy_generator=proxy_generator or self.__proxy_generator,
+                          proxy_type=proxy_type or self.__proxy_type)
         if self.__proxy_generator:
             self.proxies.clear()
             self.proxies.update(RequestsConf.random_proxy(self.__p.get('proxy'), **proxy_args))
