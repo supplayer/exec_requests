@@ -11,12 +11,12 @@ RequestsConf.proxies.extend(['user:password@1.1.1.0:11111', 'user:password@1.1.1
 
 
 class WebHandler(RequestsHandler):
-    def __init__(self, puser=None, set_proxy=True, proxy_generator=[None, proxy_generator_][1]):
+    def __init__(self, puser=None, set_proxy=True, proxy_generator=[None, proxy_generator_][0]):
         super(WebHandler, self).__init__(puser, set_proxy, proxy_generator)
 
 
 puser_ = {
-    'proxy': 'puser_user:password@1.1.1.1:1111',
+    'proxy': 'puser_user:password@2.2.2.2:2222',
     'cookies': {'cookies': 'puser_cookies1'},
     'headers': {'headers': "puser_headers1"}
 }
@@ -28,7 +28,8 @@ if __name__ == '__main__':
         # webber = RequestsHandler()
         # webber.puser_update(puser_)
         # webber.puser_reset(puser_)
-        webber.random_proxy()
+        webber.proxy_switcher()
+        webber.proxy_switcher(proxy='puser_user:password@3.3.3.3:3333')
         print(webber.headers)
         print(webber.cookies.get_dict())
         print(webber.proxies)

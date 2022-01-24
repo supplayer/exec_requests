@@ -35,15 +35,15 @@ class RequestsHandler(Session):
         [i.clear() for i in (self.proxies, self.headers, self.cookies)]
         return self.puser_update(puser, proxy_type=proxy_type)
 
-    def random_proxy(self, proxy_generator=None, proxy_type: dict = None):
+    def proxy_switcher(self, proxy: str = None, proxy_generator=None, proxy_type: dict = None):
         proxy_args = dict(proxy_generator=proxy_generator or self.__proxy_generator,
                           proxy_type=proxy_type or self.__proxy_type)
-        if self.__proxy_generator:
+        if self.__proxy_generator or proxy:
             self.proxies.clear()
-            self.proxies.update(RequestsConf.random_proxy(self.__p.get('proxy'), **proxy_args))
+            self.proxies.update(RequestsConf.random_proxy(proxy, **proxy_args))
             return self
         else:
-            raise ValueError(f'The proxy_generator is not set.')
+            raise ValueError(f'The proxy_generator or proxy is not set.')
 
     @staticmethod
     def xpath(content: bytes, xpath: str):
